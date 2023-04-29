@@ -1,4 +1,4 @@
-import pygame, sys, os, random
+import pygame, sys, os, random, noise
 clock = pygame.time.Clock()
 
 from pygame.locals import *
@@ -30,11 +30,12 @@ def generate_chunk(x,y):
             target_x = x * CHUNK_SIZE + x_pos
             target_y = y * CHUNK_SIZE + y_pos
             tile_type = 0 # nothing
-            if target_y > 10:
+            height = int(noise.pnoise1(target_x * 0.1, repeat=9999999) * 5)
+            if target_y > 8 - height:
                 tile_type = 2 # dirt
-            elif target_y == 10:
+            elif target_y == 8 - height:
                 tile_type = 1 # grass
-            elif target_y == 9:
+            elif target_y == 8 - height - 1:
                 if random.randint(1,5) == 1:
                     tile_type = 3 # plant
             if tile_type != 0:
@@ -91,9 +92,6 @@ jump_sound = pygame.mixer.Sound('jump.wav')
 grass_sounds = [pygame.mixer.Sound('grass_0.wav'),pygame.mixer.Sound('grass_1.wav')]
 grass_sounds[0].set_volume(0.2)
 grass_sounds[1].set_volume(0.2)
-
-pygame.mixer.music.load('music.wav')
-pygame.mixer.music.play(-1)
 
 player_action = 'idle'
 player_frame = 0
